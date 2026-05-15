@@ -1,9 +1,11 @@
     //dep
+
+    require('dotenv').config();
     const express = require("express");
     const app = express();
     const axios = require("axios");
     const apiClient = require("./api/fun-fact");
-    const PORT = 2021;
+    const PORT = 2026
 
 
     //route
@@ -28,14 +30,16 @@
         res.json(TransformData);
 
     } catch (error) {
-
-        console.error(error.message);
-
-        res.status(500).json({
-            message: "Error fetching data"
-        });
+	if (error.response) {
+      console.error('API Error:', error.response.status, error.response.data);
+      res.status(error.response.status).json({ message: 'Error fetching data from external API.' });
+    } else {
+      console.error('Network Error:', error.message);
+      res.status(500).json({ message: 'A network error occurred.' });
     }
+  }
 });
+
 
     // PORT
     app.listen(PORT, () => {
